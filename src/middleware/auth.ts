@@ -1,25 +1,28 @@
-import { configDotenv } from "dotenv";
-import jwt from "jsonwebtoken";
 import Koa from "koa";
+import dotenv from "dotenv";
 
-configDotenv();
+dotenv.config();
+
+const COGNITO_JWKS_URL = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}/.well-known/jwks.json`;
 
 export const authMiddleware = async (ctx: Koa.Context, next: Koa.Next) => {
   const token = ctx.headers.authorization?.split(" ")[1];
-
+  
   if (!token) {
     ctx.status = 401;
-    ctx.body = { message: "Não autorizado" };
+    ctx.body = { message: "Unauthorized" };
     return;
   }
-
+  
   try {
-    const decoded = jwt.verify(token, process.env.COGNITO_PUBLIC_KEY!);
-    ctx.state.user = decoded;
+    const { jwtVerify, createRemoteJWKSet } = await import("jose");
+
+    const JWKS = createRemoteJWKSet(new URL(COGNITO_JWKS_URL));
+    const { payload } = await jwtVerify(token, JWKS);
+    ctx.state.user = payload;
     await next();
-  } catch (error) {
-    console.error('Erro ao verificar token:', error);
+  } catch (error: any) {
     ctx.status = 403;
-    ctx.body = { message: "Forbidden", error: error };
+    ctx.body = { message: "Forbidden", error: error.message };
   }
 };

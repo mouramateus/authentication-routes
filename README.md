@@ -16,13 +16,9 @@ API de autenticação utilizando KoaJS, TypeORM, PostgreSQL e AWS Cognito.
 ## Instalação
 
 1. Clone o repositório:
-   git clone
-   cd authentication-routes
+   git clone git@github.com:mouramateus/authentication-routes.git
 
-2. Instale as dependências:
-   npm install
-
-3. Configure o ambiente:
+2. Configure o ambiente:
    Copie o arquivo .env.example para .env e preencha as variáveis.
 
 ## Execução do docker
