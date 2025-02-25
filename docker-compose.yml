@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:latest
@@ -25,19 +27,22 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
-      interval: 5s
-      timeout: 3s
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
       retries: 5
     environment:
       NODE_ENV: development
       DATABASE_URL: "postgres://${DB_USER}:${DB_PASS}@postgres_db:5432/${DB_NAME}"
+      AWS_COGNITO_USER_POOL_ID: ${AWS_COGNITO_USER_POOL_ID}
+      AWS_COGNITO_CLIENT_ID: ${AWS_COGNITO_CLIENT_ID}
+      AWS_COGNITO_REGION: ${AWS_COGNITO_REGION}
     ports:
       - "3000:3000"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: ["/bin/sh", "-c", "npm run dev"]
+    command: ["/bin/sh", "-c", "npm install && npm run dev"]
 
 volumes:
   pgdata:

@@ -1,14 +1,5 @@
-import { CognitoUserPool, CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const poolData = {
-  UserPoolId: process.env.COGNITO_USER_POOL_ID!,
-  ClientId: process.env.COGNITO_CLIENT_ID!,
-};
-
-const userPool = new CognitoUserPool(poolData);
+import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
+import { userPool } from "../config/awsCognito";
 
 export function signIn(username: string, password: string): Promise<string> {
   return new Promise((resolve, reject) => {
