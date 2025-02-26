@@ -1,15 +1,5 @@
 import { Context } from "koa";
-import { signIn } from "../services/cognitoService";
-import { userRepository } from "../services/UserService";
-import { User } from "../entities/User";
-
-// Interface para os dados de entrada no login
-interface LoginRequest {
-  email: string;
-  password: string;
-  name?: string;
-  role?: "admin" | "user";
-}
+import { findUserByEmail, updateUser as updateUserService, getAllUsers as getUsersService } from "../services/UserService";
 
 // Interface para os dados de atualização do usuário
 interface UpdateUserRequest {
@@ -18,40 +8,13 @@ interface UpdateUserRequest {
 }
 
 /**
- * @desc Login ou Registro de Usuário (SignInOrRegister)
- * @route POST /auth
- */
-export const login = async (ctx: Context) => {
-  try {
-    const { email, password, name, role } = ctx.request.body as LoginRequest;
-
-    let user = await userRepository.findOneBy({ email });
-
-    if (!user) {
-      // Se não existir, cria um novo usuário no banco
-      user = userRepository.create({ name, email, role: role || "user" });
-      await userRepository.save(user);
-    }
-
-    // Autentica no Cognito e retorna um token JWT
-    const token = await signIn(email, password);
-
-    ctx.status = 200;
-    ctx.body = { message: "Login realizado com sucesso", token };
-  } catch (error: any) {
-    ctx.status = 400;
-    ctx.body = { message: "Erro ao autenticar usuário", error: error.message };
-  }
-};
-
-/**
  * @desc Retorna os dados do usuário autenticado
  * @route GET /me
  */
 export const getUser = async (ctx: Context) => {
   try {
-    const email: string = ctx.state.user.email;
-    const user = await userRepository.findOneBy({ email });
+    const email = ctx.state.user.email;
+    const user = await findUserByEmail(email);
 
     if (!user) {
       ctx.status = 404;
@@ -74,10 +37,10 @@ export const getUser = async (ctx: Context) => {
 export const updateUser = async (ctx: Context) => {
   try {
     const { name, role } = ctx.request.body as UpdateUserRequest;
-    const email: string = ctx.state.user.email;
-    const userRole: "admin" | "user" = ctx.state.user.role;
+    const email = ctx.state.user.email;
+    const userRole = ctx.state.user.role;
 
-    let user = await userRepository.findOneBy({ email });
+    let user = await findUserByEmail(email);
 
     if (!user) {
       ctx.status = 404;
@@ -93,8 +56,7 @@ export const updateUser = async (ctx: Context) => {
     }
 
     user.isOnboarded = true;
-
-    await userRepository.save(user);
+    await updateUserService(user);
 
     ctx.status = 200;
     ctx.body = { message: "Usuário atualizado com sucesso", user };
@@ -110,7 +72,7 @@ export const updateUser = async (ctx: Context) => {
  */
 export const getAllUsers = async (ctx: Context) => {
   try {
-    const users: User[] = await userRepository.find();
+    const users = await getUsersService();
     ctx.status = 200;
     ctx.body = users;
   } catch (error: any) {
