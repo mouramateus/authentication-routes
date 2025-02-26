@@ -15,16 +15,6 @@ API de autenticação utilizando KoaJS, TypeORM, PostgreSQL e AWS Cognito.
 
 ## Instalação
 
-1. Clone o repositório:
-   git clone git@github.com:mouramateus/authentication-routes.git
+Siga o passo a passo da documentação:
+   https://www.postman.com/descent-module-cosmonaut-47218114/workspace/authentication-routes-api
 
-2. Configure o ambiente:
-   Copie o arquivo .env.example para .env e preencha as variáveis.
-
-## Execução do docker
-
-docker-compose up --build
-
-## Para rodar os testes
-
-npm test
