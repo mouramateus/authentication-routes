@@ -1,5 +1,5 @@
-import { AppDataSource } from "../config/ormconfig";
-import { User } from "../entities/User";
+import { AppDataSource } from "../config/ormconfig.js";
+import { User } from "../entities/User.js";
 
 export const userRepository = AppDataSource.getRepository(User);
 

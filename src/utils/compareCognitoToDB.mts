@@ -1,11 +1,11 @@
-import { CognitoIdentityServiceProvider } from "aws-sdk";
-import { createUser, updateUser } from "../services/UserService";
+import AWS from "aws-sdk";
+import { createUser, updateUser } from "../services/UserService.mjs";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 export const compareCognitoToDB = async (user: any, email: string, name: string) => {
-  const cognito = new CognitoIdentityServiceProvider();
+  const cognito = new AWS.CognitoIdentityServiceProvider();
   const userPoolId = process.env.COGNITO_USER_POOL_ID!;
 
   try {

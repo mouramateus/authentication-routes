@@ -1,7 +1,7 @@
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
-import { AppDataSource } from "./config/ormconfig";
-import router from "./routes";
+import { AppDataSource } from "./config/ormconfig.js";
+import router from "./routes/index.mjs";
 
 const app = new Koa();
 app.use(bodyParser());

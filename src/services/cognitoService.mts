@@ -1,8 +1,6 @@
-import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
-import { userPool } from "../config/awsCognito";
 import AWS from "aws-sdk";
 import dotenv from "dotenv";
-import { generateSecretHash } from "../utils/generateSecretHash";
+import { generateSecretHash } from "../utils/generateSecretHash.js";
 
 dotenv.config();
 

@@ -1,10 +1,10 @@
 import { Context } from "koa";
-import { CognitoIdentityServiceProvider } from "aws-sdk";
-import { generateSecretHash } from "../utils/generateSecretHash";
+import AWS from "aws-sdk";
+import { generateSecretHash } from "../utils/generateSecretHash.js";
 import dotenv from "dotenv";
-import { addUserToGroup, signIn } from "../services/cognitoService";
-import { createUser, findUserByEmail } from "../services/UserService";
-import { compareCognitoToDB } from "../utils/compareCognitoToDB";
+import { addUserToGroup, signIn } from "../services/cognitoService.mjs";
+import { createUser, findUserByEmail } from "../services/UserService.mjs";
+import { compareCognitoToDB } from "../utils/compareCognitoToDB.mjs";
 
 interface AuthRequest {
   email: string;
@@ -14,7 +14,7 @@ interface AuthRequest {
 
 dotenv.config();
 
-const cognito = new CognitoIdentityServiceProvider();
+const cognito = new AWS.CognitoIdentityServiceProvider();;
 const clientId = process.env.COGNITO_CLIENT_ID!;
 const clientSecret = process.env.COGNITO_CLIENT_SECRET!;
 const userPoolId = process.env.COGNITO_USER_POOL_ID!;

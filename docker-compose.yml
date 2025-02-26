@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:latest
@@ -20,6 +18,7 @@ services:
       retries: 5
 
   app:
+    image: node:latest
     build: .
     container_name: koa_app
     restart: always
@@ -36,7 +35,7 @@ services:
       DATABASE_URL: "postgres://${DB_USER}:${DB_PASS}@postgres_db:5432/${DB_NAME}"
       COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
       COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
-      COGNITO_REGION: ${COGNITO_REGION}
+      AWS_REGION: ${AWS_REGION}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     ports:

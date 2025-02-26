@@ -1,7 +1,7 @@
 import Router from "koa-router";
-import { getUser, updateUser, getAllUsers } from "../controllers/UserController";
-import { authMiddleware } from "../middleware/auth";
-import { roleMiddleware } from "../middleware/role";
+import { getUser, updateUser, getAllUsers } from "../controllers/UserController.mjs";
+import { authMiddleware } from "../middleware/auth.mjs";
+import { roleMiddleware } from "../middleware/role.js";
 
 const router = new Router();
 

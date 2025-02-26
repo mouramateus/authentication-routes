@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { findUserByEmail, updateUser as updateUserService, getAllUsers as getUsersService } from "../services/UserService";
+import { findUserByEmail, updateUser as updateUserService, getAllUsers as getUsersService } from "../services/UserService.mjs";
 
 // Interface para os dados de atualização do usuário
 interface UpdateUserRequest {

@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import * as crypto from "node:crypto";
 
 export const generateSecretHash = (email: string, clientId: string, clientSecret: string) => {
   return crypto
