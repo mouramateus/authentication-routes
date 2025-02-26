@@ -11,7 +11,7 @@ export default {
   rules: {
     "no-unused-vars": "warn",
     "no-console": "off",
-    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
   },
 };
