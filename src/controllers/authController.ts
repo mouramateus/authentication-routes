@@ -2,11 +2,12 @@ import { Context } from "koa";
 import { CognitoIdentityServiceProvider } from "aws-sdk";
 import { generateSecretHash } from "../utils/generateSecretHash";
 import dotenv from "dotenv";
+import { addUserToGroup } from "../services/cognitoService";
 
 interface AuthRequest {
   email: string;
   password: string;
-  name?: string;
+  name: string;
 }
 
 dotenv.config();
@@ -30,6 +31,14 @@ export const authController = {
     const secretHash = generateSecretHash(email, clientId, clientSecret);
 
     try {
+      // Verifica se o usuário existe no Cognito
+      await cognito
+        .adminGetUser({
+          UserPoolId: userPoolId,
+          Username: email,
+        })
+        .promise();
+
       // Tenta autenticar o usuário
       const authResponse = await cognito
         .initiateAuth({
@@ -49,8 +58,8 @@ export const authController = {
         token: authResponse.AuthenticationResult?.IdToken,
       };
     } catch (error: any) {
+      // Se o usuário não for encontrado, cria um novo usuário no Cognito
       if (error.code === "UserNotFoundException") {
-        // Se o usuário não for encontrado, cria um novo usuário no Cognito
         try {
           await cognito
             .signUp({
@@ -64,11 +73,13 @@ export const authController = {
               ],
             })
             .promise();
+          
+          await addUserToGroup(email, "users");
 
           ctx.status = 201;
           ctx.body = {
             message:
-              "Usuário registrado com sucesso. Confirme o email no Cognito.",
+              "Usuário registrado com sucesso. Confirme o email manualmente no Cognito.",
           };
           return;
         } catch (signupError) {
@@ -81,6 +92,7 @@ export const authController = {
         }
       }
 
+      //Se o erro for de senha incorreta ou outro problema, retorna erro de autenticação
       ctx.status = 401;
       ctx.body = {
         message: "Erro ao autenticar usuário",
