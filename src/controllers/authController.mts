@@ -43,7 +43,7 @@ export const authController = {
       const token = await signIn(email, password);
 
       ctx.status = 200;
-      ctx.body = { message: "Autenticado com sucesso!", token, user };
+      ctx.body = { message: "Autenticado com sucesso!", token };
       return;
     } catch (error: any) {
       if (error.code === "UserNotFoundException") {
